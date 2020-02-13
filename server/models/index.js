@@ -48,6 +48,16 @@ module.exports = {
         });
     },
 
+    deleteOne: (id) => {
+      GalleryModel.deleteOne({ listing_id: Number(id) })
+        .then((results) => {
+          cb(null, results);
+        })
+        .catch((err) => {
+          cb(err);
+        });
+    },
+
     deleteAll: () => {
       GalleryModel.deleteMany({})
         .then((results) => {

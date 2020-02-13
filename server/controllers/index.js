@@ -49,14 +49,18 @@ module.exports = {
       // query mongo for that record
       // update that record to mongo
       // send success message in the response
-      res.status(200).send();
+      res.status(200).send(results);
     },
 
     deleteOne: (req, res) => {
-      // query mongo for that record
-      // delete that record from mongo
-      // send success message in the response
-      res.status(200).send();
+      const id = req.params.id;
+      models.gallery.deleteOne(id, (err, results) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.status(200).send(results);
+        }
+      });
     },
 
     deleteAll: (req, res) => {
