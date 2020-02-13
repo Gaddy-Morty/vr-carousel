@@ -7,6 +7,17 @@ mongoose.connect(mongoUrl, { server: { reconnectTries: Number.MAX_VALUE } });
 
 module.exports = {
   gallery: {
+    insertOne: (gallery, cb) => {
+      const galleryInstance = new GalleryModel(gallery);
+      galleryInstance.save()
+        .then((data) => {
+          cb(null, data);
+        })
+        .catch((err) => {
+          cb(err);
+        });
+    },
+
     insertAll: (data, cb) => {
       GalleryModel.insertMany(data)
         .then((docs) => {
@@ -19,8 +30,8 @@ module.exports = {
 
     getOne: (id, cb) => {
       GalleryModel.find({ listing_id: Number(id) })
-        .then((results) => {
-          cb(null, results);
+        .then((result) => {
+          cb(null, result);
         })
         .catch((err) => {
           cb(err);
@@ -37,7 +48,7 @@ module.exports = {
         });
     },
 
-    deleteAll: (cb) => {
+    deleteAll: () => {
       GalleryModel.deleteMany({})
         .then((results) => {
           cb(null, results);
