@@ -14,7 +14,7 @@
 }
 ```
 
->Response
+>Response (Content-Type: application/json)
 ```sh
 {
   photos: [
@@ -36,7 +36,7 @@
 }
 ```
 
->Body
+>Body (Content-Type: application/json)
 ```sh
 {
   photo_url_path: String,
@@ -54,7 +54,7 @@
 }
 ```
 
->Body
+>Body (Content-Type: application/json)
 ```sh
 {
   photo_url_path: String,
