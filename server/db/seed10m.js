@@ -1,5 +1,5 @@
-const fs = require('fs');
-const csv = require('fast-csv');
+const { createWriteStream } = require('fs');
+const { format } = require('fast-csv');
 const data = require('./output.js');
 
 const getRandomInt = (min, max) => {
@@ -93,15 +93,16 @@ function writePhotosCsv(stream, start, size, callback) {
   }
 }
 
-const writable = fs.createWriteStream('./server/db/photos.part9.csv');
-const stream = csv.format({ headers: true });
+const writable = createWriteStream('./server/db/photos.part9.csv');
+const stream = format({ headers: true });
 stream.pipe(writable);
+// uncomment to generate a csv with photos
 writePhotosCsv(stream, 19000000, Math.pow(10, 6), () => { stream.end() });
 
 const createListingIds = (start, size) => {
   const end = start + size;
-  const writable = fs.createWriteStream('./server/db/listings.csv');
-  const stream = csv.format({ headers: true });
+  const writable = createWriteStream('./server/db/listings.csv');
+  const stream = format({ headers: true });
   stream.pipe(writable);
   
   let index = start;
@@ -113,4 +114,5 @@ const createListingIds = (start, size) => {
   stream.end();
 };
 
+// uncomment to generate a csv with listing ids
 // createListingIds(Math.pow(10, 7), Math.pow(10, 7));
