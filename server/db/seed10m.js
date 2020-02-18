@@ -1,43 +1,6 @@
-const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-const data = require('./photos.js');
-
-const listingsCsv = createCsvWriter({
-  path: './server/db/listings.csv',
-  header: [
-    {
-      id: 'listing_id', 
-      title: 'listing_id'
-    },
-  ],
-});
-
-// may need to add a photo.id for indexing
-const photosCsv = createCsvWriter({
-  path: './server/db/photos.csv',
-  header: [
-    {
-      id: 'url_path', 
-      title: 'url_path'
-    },
-    {
-      id: 'caption', 
-      title: 'caption'
-    },
-    {
-      id: 'space_type', 
-      title: 'space_type'
-    },
-    {
-      id: 'is_main', 
-      title: 'is_main'
-    },
-    {
-      id: 'listing_id', 
-      title: 'listing_id'
-    },
-  ],
-  append: true,
-});
+const fs = require('fs');
+const csv = require('fast-csv');
+const data = require('./output.js');
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
@@ -46,17 +9,17 @@ const getRandomInt = (min, max) => {
 };
 
 const captions = [
-  "Beautiful shades permeate this home",
-  "Equipped with everything you need",
-  "Have your rest in tranquil ambiance",
-  "Interesting things to do abound here",
-  "A perfect space for your next vacation",
-  "Enjoy quality time with your family",
-  "The palette is balanced yet 'colorful'",
-  "An architect and interior designer dream",
-  "Natural light illuminates the space",
-  "Ready for you, your family, and friends",
-  "Make this place your own -- you're welcome",
+  "Warm sunlight throughout",
+  "Everything you need is here",
+  "Rest in tranquil ambiance",
+  "Peek around this place",
+  "Just... perfect",
+  "Enjoy your time here",
+  "Balanced yet 'colorful'",
+  "An interior designer dream",
+  "Natural light permeates",
+  "Ready for you, YASS",
+  "Stay -- you're welcome",
 ];
 
 const createGalleries = (list) => {
@@ -78,62 +41,76 @@ const createGalleries = (list) => {
 
 const photos = createGalleries(data.Contents);
 
-const addListingPhotos = (listingId, callback) => {
-  const list = [];
+const addListingPhotos = (start, size, callback) => {
+  const end = start + size;
+  let listingId = start;
   
-  // select one gallery at random
-  const galleries = Object.keys(photos);
-  // pick a photo gallery randomly to add to a listing
-  const galleryIdx = getRandomInt(0, galleries.length);
-  const gallery = galleries[galleryIdx];
+  while (listingId < end) {
+    // pick a random photo gallery to add to a listing
+    const galleries = Object.keys(photos);
+    const gallery = galleries[getRandomInt(0, galleries.length)];
 
-  // pick a photo to be the main photo in the listing
-  const photoIdx = getRandomInt(0, photos[gallery].length);
+    // pick a random photo as the main photo of the listing
+    const photoIdx = getRandomInt(0, photos[gallery].length);
 
-  // add a listing_id to all photos in the gallery
-  for (let i = 0; i < photos[gallery].length; i += 1) {
-    const photo = photos[gallery][i];
-    if (photoIdx === i) {
-      photo.is_main = true;
-    } else {
-      photo.is_main = false;
+    // add a listing_id sequentially to all photos in the gallery
+    for (let i = 0; i < photos[gallery].length; i += 1) {
+      const photo = photos[gallery][i];
+      photo.is_main = (i === photoIdx);
+      photo.listing_id = listingId;
+      stream.write(photo);
     }
-    photo.listing_id = listingId;
-    list.push(photo);
+    listingId += 1;
   }
-  callback(list);
+  stream.end();
 };
 
-// // Can't use because exceeds heap size
-// const writesToCsv = [];
-// for (let i = 10000000; i < 20000000; i += 1) {
-//   addListingPhotos(i, (list) => {
-//     const prom = photosCsv.writeRecords(list)
-//       .then(() => {})
-//       .catch((error) => { console.log('Error', error) });
-//     writesToCsv[i] = prom;
-//   });
-// }
-  
-// Promise.all(writesToCsv)
-//   .then(() => console.log('Promised ALL'))
-//   .catch((err) => console.log(err));
-
-const createListingIds = (start, size, callback) => {
+function writePhotosCsv(stream, start, size, callback) {
   const end = start + size;
-  const listings = [];
   let index = start;
+  write();
+  function write () {
+    let ok = true;
+    while (index < end && ok) {      
+      const galleries = Object.keys(photos);
+      const gallery = galleries[getRandomInt(0, galleries.length)];
+      const photoIdx = getRandomInt(0, photos[gallery].length);
+      for (let i = 0; i < photos[gallery].length; i += 1) {
+        const photo = photos[gallery][i];
+        photo.is_main = (i === photoIdx);
+        photo.listing_id = index;
+        if (index === end - 1) {
+          ok = stream.write(photo, callback);
+        }
+        ok = stream.write(photo);
+      }
+      index += 1;
+    }
 
+    if (index < end) {
+      stream.once('drain', write);
+    }
+  }
+}
+
+const writable = fs.createWriteStream('./server/db/photos.part9.csv');
+const stream = csv.format({ headers: true });
+stream.pipe(writable);
+writePhotosCsv(stream, 19000000, Math.pow(10, 6), () => { stream.end() });
+
+const createListingIds = (start, size) => {
+  const end = start + size;
+  const writable = fs.createWriteStream('./server/db/listings.csv');
+  const stream = csv.format({ headers: true });
+  stream.pipe(writable);
+  
+  let index = start;
   while (index < end) {
-    listings.push({ listing_id: index });
+    // this is an async operation
+    stream.write({ listing_id: index });
     index += 1;
   }
-
-  callback(listings);
+  stream.end();
 };
 
-// createListingIds(Math.pow(10, 7), Math.pow(10, 7), (listings) => {
-//   listingsCsv.writeRecords(listings)
-//     .then(() => { console.log('Wrote to CSV') })
-//     .catch((error) => { console.log('Error', error) });
-// });
+// createListingIds(Math.pow(10, 7), Math.pow(10, 7));
