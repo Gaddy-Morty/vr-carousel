@@ -1,4 +1,7 @@
+.DS_Store
 node_modules
 bundle.js
 .eslintrc.json
 coverage
+server/db/*.csv
+server/db/listings.csv

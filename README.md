@@ -5,7 +5,8 @@
 2) npm run build
 3) npm run start
 
-### Endpoints
+## Endpoints
+
 #### GET /listings/:listingId/photos/
 >req.params
 ```sh
@@ -21,7 +22,9 @@
 		{
 			photo_url_path: String,
 			caption: String,
-			order: Number
+			order: Number,
+      space_type: String,
+      is_main: Boolean
 		},
 		...
 	]
@@ -41,7 +44,9 @@
 {
   photo_url_path: String,
   caption: String,
-  order: Number
+  order: Number,
+  space_type: String,
+  is_main: Boolean
 }
 ```
 
@@ -55,11 +60,14 @@
 ```
 
 >Body (Content-Type: application/json)
+>Can have any of the following optional properties
 ```sh
 {
   photo_url_path: String,
   caption: String,
-  order: Number
+  order: Number,
+  space_type: String,
+  is_main: Boolean
 }
 ```
 
