@@ -8,7 +8,8 @@
     "build": "webpack",
     "start": "nodemon ./server/index.js",
     "seed": "node ./server/db/seed.js",
-    "seed10m": "node ./server/db/seed10m.js"
+    "seed10m": "node ./server/db/seed10m.js",
+    "mariadb": "mysql -u gabrielsong < server/db/schema.sql"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
     "@elastic/elasticsearch": "^7.6.0",
     "@testing-library/jest-dom": "^5.1.0",
     "@testing-library/react": "^9.4.0",
+    "array.prototype.flatmap": "^1.2.3",
     "aws-sdk": "^2.619.0",
     "axios": "^0.19.2",
     "body-parser": "^1.19.0",
