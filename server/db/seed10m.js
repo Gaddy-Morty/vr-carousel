@@ -34,6 +34,7 @@ const createGalleries = (list) => {
     photo.url_path = list[i].Key;
     photo.caption = captions[getRandomInt(0, captions.length)];
     photo.space_type = '';
+    photo.order = null;
     photos[gallery].push(photo);
   }
   return photos;
@@ -41,31 +42,7 @@ const createGalleries = (list) => {
 
 const photos = createGalleries(data.Contents);
 
-const addListingPhotos = (start, size, callback) => {
-  const end = start + size;
-  let listingId = start;
-  
-  while (listingId < end) {
-    // pick a random photo gallery to add to a listing
-    const galleries = Object.keys(photos);
-    const gallery = galleries[getRandomInt(0, galleries.length)];
-
-    // pick a random photo as the main photo of the listing
-    const photoIdx = getRandomInt(0, photos[gallery].length);
-
-    // add a listing_id sequentially to all photos in the gallery
-    for (let i = 0; i < photos[gallery].length; i += 1) {
-      const photo = photos[gallery][i];
-      photo.is_main = (i === photoIdx);
-      photo.listing_id = listingId;
-      stream.write(photo);
-    }
-    listingId += 1;
-  }
-  stream.end();
-};
-
-function writePhotosCsv(stream, start, size, callback) {
+const writePhotosCsv = (stream, start, size, callback) => {
   const end = start + size;
   let index = start;
   write();
@@ -77,12 +54,17 @@ function writePhotosCsv(stream, start, size, callback) {
       const photoIdx = getRandomInt(0, photos[gallery].length);
       for (let i = 0; i < photos[gallery].length; i += 1) {
         const photo = photos[gallery][i];
-        photo.is_main = (i === photoIdx);
+        if (i === photoIdx) {
+          photo.is_main = 1;
+        } else {
+          photo.is_main = 0;
+        }
         photo.listing_id = index;
         if (index === end - 1) {
           ok = stream.write(photo, callback);
+        } else {
+          ok = stream.write(photo);
         }
-        ok = stream.write(photo);
       }
       index += 1;
     }
@@ -93,11 +75,11 @@ function writePhotosCsv(stream, start, size, callback) {
   }
 }
 
-const writable = createWriteStream('./server/db/photos.part9.csv');
+const writable = createWriteStream('./server/db/photos.csv');
 const stream = format({ headers: true });
 stream.pipe(writable);
 // uncomment to generate a csv with photos
-writePhotosCsv(stream, 19000000, Math.pow(10, 6), () => { stream.end() });
+// writePhotosCsv(stream, Math.pow(10, 7), Math.pow(10, 7), () => { stream.end() });
 
 const createListingIds = (start, size) => {
   const end = start + size;
@@ -108,7 +90,7 @@ const createListingIds = (start, size) => {
   let index = start;
   while (index < end) {
     // this is an async operation
-    stream.write({ listing_id: index });
+    stream.write({ id: index });
     index += 1;
   }
   stream.end();
