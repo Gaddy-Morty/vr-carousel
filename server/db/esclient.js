@@ -41,49 +41,12 @@ const createGalleries = (list) => {
   return photos;
 };
 
-const createPhotosJson = (photos, start, size, callback) => {
-  const collection = [];
-  const end = start + size;
-  let index = start;
-  let bulkSize = 0;
-
-  function write () {
-    let errors = false;
-    let ok = true;
-    while (index < end && !errors && ok) {
-      // exit condition
-      if (bulkSize >= 500) {
-        ok = false;
-      }
-
-      const galleries = Object.keys(photos);
-      const gallery = galleries[getRandomInt(0, galleries.length)];
-      const photoIdx = getRandomInt(0, photos[gallery].length);
-      for (let i = 0; i < photos[gallery].length; i += 1) {
-        const obj = photos[gallery][i];
-        const photo = photos[gallery][i];
-        if (i === photoIdx) {
-          photo.is_main = 1;
-        } else {
-          photo.is_main = 0;
-        }
-        photo.listing_id = index;
-        collection.push(photo);
-        bulkSize += 1;
-      }
-      index += 1;
-    }
-  }
-
-};
-
-
 const { Client } = require('@elastic/elasticsearch');
 const client = new Client({
   node: 'http://localhost:9200',
 });
 
-async function run () {
+async function createIndex () {
   await client.indices.create({
     index: 'listing',
     // the body of the index
@@ -106,29 +69,30 @@ async function run () {
                 }
               }
             }
-          }  
+          }
         }
       }
     }
   }, { ignore: [400] });
+}
 
-  // const dataset = [{
-  //   id: 1,
-  //   text: 'If I fall, don\'t bring me back.',
-  //   user: 'jon',
-  //   date: new Date()
-  // }]
+createIndex();
 
+async function run () {
+  // Now, the code to generate the photo object
   const allPhotos = createGalleries(data.Contents);
-  const dataset = [];
-  const start = 10000000; // starting index
-  const size = 10000; // test run
-  let index = start;
+  let dataset = []; // body of the bulk API call
+  const start = Math.pow(10, 7); // starting index, i.e. Math.pow(10, 7)
+  const size = Math.pow(10, 2); // test run
   const end = start + size;
-  const galleries = Object.keys(allPhotos);
-  const gallery = galleries[getRandomInt(0, galleries.length)];
-  const photoIdx = getRandomInt(0, allPhotos[gallery].length);
+  let index = start;
+  let bulkSize = 0; // limit to 10K per call, write ~10K times
+  let bulkCount = 0; // track how many Bulk API calls we make
+  
   while (index < end) {
+    const galleries = Object.keys(allPhotos);
+    const gallery = galleries[getRandomInt(0, galleries.length)];
+    const photoIdx = getRandomInt(0, allPhotos[gallery].length);
     for (let i = 0; i < allPhotos[gallery].length; i += 1) {
       const photo = allPhotos[gallery][i];
       if (i === photoIdx) {
@@ -138,64 +102,67 @@ async function run () {
       }
       photo.listing_id = index;
       dataset.push(photo);
+      bulkSize += 1;
     }
+
+    if (bulkSize >= 100) {
+      // dataset is an array of objects
+      // flatMap maps each element and flattens results into a new array
+      // doc is each object with id/text/user/date
+      const body = dataset.flatMap(doc => [
+        {
+          index: {
+            _index: 'listing'
+          }
+        }, doc // each array object
+      ]);
+      // body should be a flattened array
+      
+      // reset closure variables
+      dataset = [];
+      bulkSize = 0;
+
+      // pass object to bulk method
+      // asynchronously store response
+      const { body: bulkResponse } = await client.bulk({ refresh: false, body });
+      await function () { bulkCount += 1; }();
+
+      // error handling logic (from official documentation)
+      if (bulkResponse.errors) {
+        const erroredDocuments = [];
+        // The items array has the same order of the dataset we just indexed.
+        // The presence of the `error` key indicates that the operation
+        // that we did for the document has failed.
+        bulkResponse.items.forEach((action, i) => {
+          const operation = Object.keys(action)[0]
+          if (action[operation].error) {
+            erroredDocuments.push({
+              // If the status is 429 it means that you can retry the document,
+              // otherwise it's very likely a mapping error, and you should
+              // fix the document before to try it again.
+              status: action[operation].status,
+              error: action[operation].error,
+              operation: body[i * 2],
+              document: body[i * 2 + 1]
+            });
+          }
+        });
+        console.log(erroredDocuments);
+      }
+    }
+
+    // Add the photo set for the next listing
     index += 1;
   }
-
-  // dataset is an array of objects
-  // flatMap maps each element and flattens results into a new array
-  // doc is each object with id/text/user/date
-  const body = dataset.flatMap(doc => [
-    { 
-      index: { 
-        _index: 'listing' 
-      } 
-    }, doc // thisArg?
-  ]);
-  // body should be a flattened array
-
-  // pass object to bulk method
-  // asynchronously store response
-  const { body: bulkResponse } = await client.bulk({ refresh: false, body })
-
-  if (bulkResponse.errors) {
-    const erroredDocuments = []
-    // The items array has the same order of the dataset we just indexed.
-    // The presence of the `error` key indicates that the operation
-    // that we did for the document has failed.
-    bulkResponse.items.forEach((action, i) => {
-      const operation = Object.keys(action)[0]
-      if (action[operation].error) {
-        erroredDocuments.push({
-          // If the status is 429 it means that you can retry the document,
-          // otherwise it's very likely a mapping error, and you should
-          // fix the document before to try it again.
-          status: action[operation].status,
-          error: action[operation].error,
-          operation: body[i * 2],
-          document: body[i * 2 + 1]
-        })
-      }
-    })
-    console.log(erroredDocuments)
-  }
-
-  const { body: count } = await client.count({ index: 'listing' })
-  console.log(count)
+  const { body: count } = await client.count({ index: 'listing' });
+  // logs out the total index count
+  console.log('Elasticsearch index count:', count, '\n', 'Bulk API calls:', bulkCount);
 }
 
-run().catch(console.log)
+run().catch(console.log);
 
-// client.bulk({
-//   index: string,
-//   type: string,
-//   wait_for_active_shards: string,
-//   refresh: 'true' | 'false' | 'wait_for',
-//   routing: string,
-//   timeout: string,
-//   _source: string | string[],
-//   _source_excludes: string | string[],
-//   _source_includes: string | string[],
-//   pipeline: string,
-//   body: object
-// })
+// (async function() {
+//   for await (let asyncReturn of run()) {
+//     asyncReturn.catch(console.log)
+//   }
+// })();
