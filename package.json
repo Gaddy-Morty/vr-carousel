@@ -8,7 +8,7 @@
     "build": "webpack",
     "start": "nodemon ./server/index.js",
     "seed": "node ./server/db/seed.js",
-    "seed10m": "node ./server/db/seed10m.js",
+    "csv": "node ./server/db/mdbclient.js",
     "mariadb": "mysql -u gabrielsong < server/db/schema.sql"
   },
   "repository": {

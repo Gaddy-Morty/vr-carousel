@@ -1,6 +1,6 @@
 const { createWriteStream } = require('fs');
 const { format } = require('fast-csv');
-const data = require('./output.js');
+const data = require('./s3Export.js');
 
 const getRandomInt = (min, max) => {
   min = Math.ceil(min);
