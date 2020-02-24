@@ -75,15 +75,16 @@ const writePhotosCsv = (stream, start, size, callback) => {
   }
 }
 
-const writable = createWriteStream('./server/db/photos.csv');
+const writable = createWriteStream('./CSVs/photos.part1.csv');
 const stream = format({ headers: true });
 stream.pipe(writable);
 // uncomment to generate a csv with photos
-// writePhotosCsv(stream, Math.pow(10, 7), Math.pow(10, 7), () => { stream.end() });
+writePhotosCsv(stream, 10000000, 5000000, () => { stream.end() });
+// writePhotosCsv(stream, 15000000, 5000000, () => { stream.end() });
 
 const createListingIds = (start, size) => {
   const end = start + size;
-  const writable = createWriteStream('./server/db/listings.csv');
+  const writable = createWriteStream('./CSVs/listings.csv');
   const stream = format({ headers: true });
   stream.pipe(writable);
   
@@ -97,4 +98,4 @@ const createListingIds = (start, size) => {
 };
 
 // uncomment to generate a csv with listing ids
-// createListingIds(Math.pow(10, 7), Math.pow(10, 7));
+createListingIds(Math.pow(10, 7), Math.pow(10, 7));
