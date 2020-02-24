@@ -9,7 +9,8 @@
     "start": "nodemon ./server/index.js",
     "seed": "node ./server/db/seed.js",
     "csv": "node ./server/db/mdbclient.js",
-    "mariadb": "mysql -u gabrielsong < server/db/schema.sql"
+    "mariadb": "mysql -u gabrielsong < server/db/schema.sql",
+    "elastic": "node ./server/db/esclient.js"
   },
   "repository": {
     "type": "git",
