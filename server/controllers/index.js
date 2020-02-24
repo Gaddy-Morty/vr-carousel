@@ -2,6 +2,7 @@ const models = require('../models');
 
 module.exports = {
   gallery: {
+    // legacy
     getOne: (req, res) => {
       const id = req.params.id;
       models.gallery.getOne(id, (err, results) => {
@@ -13,6 +14,7 @@ module.exports = {
       });
     },
 
+    // legacy
     getAll: (req, res) => {
       models.gallery.getAll((err, results) => {
         if (err) {
@@ -23,6 +25,7 @@ module.exports = {
       });
     },
 
+    // legacy extension
     insertOne: (req, res) => {
       const gallery = req.body;
       models.gallery.insertOne(gallery, (err, results) => {
@@ -34,6 +37,7 @@ module.exports = {
       });
     },
 
+    // legacy
     insertAll: (req, res) => {
       models.gallery.insertAll(data, (err, results) => {
         if (err) {
@@ -44,14 +48,7 @@ module.exports = {
       });
     },
 
-    updateOne: (req, res) => {
-      // get the body content
-      // query mongo for that record
-      // update that record to mongo
-      // send success message in the response
-      res.status(200).send(results);
-    },
-
+    // legacy extension
     deleteOne: (req, res) => {
       const id = req.params.id;
       models.gallery.deleteOne(id, (err, results) => {
@@ -63,8 +60,9 @@ module.exports = {
       });
     },
 
+    // legacy
     deleteAll: (req, res) => {
-      models.gallery.insertAll((err, results) => {
+      models.gallery.deleteAll((err, results) => {
         if (err) {
           console.log(err);
         } else {
