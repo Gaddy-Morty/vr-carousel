@@ -28,6 +28,6 @@ app.all('/api/v2', function (req, res, next) {
   console.log('Accessing v2 API ...');
   next();
 });
-app.use('/api/v2/photos', router);
+app.use('/api/v2', router);
 
 app.listen(port, () => console.log(`Server listening on port ${port}!`));
