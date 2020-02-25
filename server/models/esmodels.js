@@ -3,7 +3,6 @@ const { esclient } = require('../db/index.js');
 // Create Elasticsearch access methods
 module.exports = {
   getAll: (listingId, callback) => {
-    console.log('logging esclient object', listingId);
     esclient.search({
       index: 'photos',
       body: {
@@ -16,16 +15,14 @@ module.exports = {
       .catch((err) => callback(err))
   },
 
-  getOne: (listingId, id, callback) => {
-    // ES node client method
-      // promise chain
-        // cb invocation
-  },
-
   insertOne: (listingId, data, callback) => {
-    // ES node client method
-      // promise chain
-        // cb invocation
+    data.listing_id = listingId;
+    esclient.index({
+      index: { _index: 'photos' },
+      body: data
+    })
+      .then((data) => callback(null, data))
+      .catch((err) => callback(err))
   },
 
   updateOne: (listingId, data, callback) => {

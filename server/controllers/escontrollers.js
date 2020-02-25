@@ -8,7 +8,7 @@ module.exports = {
     models.getAll(listingId, (err, data) => {
       // callback, error first
       if (err) {
-        console.log(`Elasticsearch controller error: ${err}`)
+        console.log(`Elasticsearch getAll error: ${err}`)
       } else { // callback, data
         const photos = data.body.hits.hits;
         res.status(200).send(photos);
@@ -20,9 +20,14 @@ module.exports = {
     const { listingId } = req.params;
     const { body } = req;
     // call db method for insertOne
+    models.insertOne(listingId, body, (err, data) => {
       // callback, error first
-      // callback, data
-        res.send(`insertOne! ${body}`)
+      if (err) {
+        console.log(`Elasticsearch insertOne error: ${err}`)
+      } else { // callback, data
+        res.status(200).send(data);
+      }
+    });
   },
 
   updateOne: (req, res) => {
