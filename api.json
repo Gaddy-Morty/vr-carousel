@@ -1,0 +1,62 @@
+{
+  "body": {
+      "_index": "photos",
+      "_type": "_doc",
+      "_id": "EjbteXABaFtM5lbdZHny",
+      "_version": 1,
+      "result": "created",
+      "_shards": {
+          "total": 2,
+          "successful": 1,
+          "failed": 0
+      },
+      "_seq_no": 100000001,
+      "_primary_term": 1
+  },
+  "statusCode": 201,
+  "headers": {
+      "location": "/photos/_doc/EjbteXABaFtM5lbdZHny",
+      "content-type": "application/json; charset=UTF-8",
+      "content-length": "181"
+  },
+  "warnings": null,
+  "meta": {
+      "context": null,
+      "request": {
+          "params": {
+              "method": "POST",
+              "path": "/photos/_doc",
+              "body": "{\"url_path\":\"CDG/832a0fe236441.jpg\",\"caption\":\"Postman again\",\"listing_id\":\"12345678\"}",
+              "querystring": "",
+              "headers": {
+                  "User-Agent": "elasticsearch-js/7.6.0 (darwin 19.3.0-x64; Node.js v12.14.1)",
+                  "Content-Type": "application/json",
+                  "Content-Length": "86"
+              },
+              "timeout": 30000
+          },
+          "options": {
+              "warnings": null
+          },
+          "id": 4
+      },
+      "name": "elasticsearch-js",
+      "connection": {
+          "url": "http://localhost:9200/",
+          "id": "http://localhost:9200/",
+          "headers": {},
+          "deadCount": 0,
+          "resurrectTimeout": 0,
+          "_openRequests": 0,
+          "status": "alive",
+          "roles": {
+              "master": true,
+              "data": true,
+              "ingest": true,
+              "ml": false
+          }
+      },
+      "attempts": 0,
+      "aborted": false
+  }
+}

@@ -1,13 +1,10 @@
 const router = require('express').Router();
-const controller = require('./controllers');
+const controllers = require('./controllers/escontrollers.js');
 
 //Connect controller methods to their corresponding routes
-router.get('/:id', controller.gallery.getOne); // use existing model
-
-router.post('/', controller.gallery.insertOne); // new method and model
-
-// router.put('/', controller.gallery.updateOne); // define functionality 1st
-
-router.delete('/', controller.gallery.deleteOne); // new method and model
+router.get('/listings/:listingId/photos', controllers.getAll);
+router.post('/listings/:listingId/photos', controllers.insertOne);
+router.patch('/listings/:listingId/photos/:photoId', controllers.updateOne);
+router.delete('/listings/:listingId/photos/:photoId', controllers.deleteOne);
 
 module.exports = router;
