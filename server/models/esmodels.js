@@ -12,7 +12,7 @@ module.exports = {
       }
     })
       .then((data) => callback(null, data))
-      .catch((err) => callback(err))
+      .catch((err) => callback(err));
   },
 
   insertOne: (listingId, data, callback) => {
@@ -22,13 +22,20 @@ module.exports = {
       body: data
     })
       .then((data) => callback(null, data))
-      .catch((err) => callback(err))
+      .catch((err) => callback(err));
   },
 
-  updateOne: (listingId, data, callback) => {
-    // ES node client method
-      // promise chain
-        // cb invocation
+  updateOne: (listingId, photoId, data, callback) => {
+    data.listing_id = listingId;
+    esclient.update({
+      index: 'photos',
+      id: photoId,
+      body: {
+        doc: data
+      }
+    })
+      .then((data) => callback(null, data))
+      .catch((err) => callback(err));
   },
 
   deleteOne: (listingId, id, callback) => {

@@ -8,7 +8,7 @@ module.exports = {
     models.getAll(listingId, (err, data) => {
       // callback, error first
       if (err) {
-        console.log(`Elasticsearch getAll error: ${err}`)
+        console.log(`Elasticsearch getAll error: ${err}`);
       } else { // callback, data
         const photos = data.body.hits.hits;
         res.status(200).send(photos);
@@ -23,20 +23,25 @@ module.exports = {
     models.insertOne(listingId, body, (err, data) => {
       // callback, error first
       if (err) {
-        console.log(`Elasticsearch insertOne error: ${err}`)
+        console.log(`Elasticsearch insertOne error: ${err}`);
       } else { // callback, data
-        res.status(200).send(data);
+        res.send(data);
       }
     });
   },
 
   updateOne: (req, res) => {
-    const { listingId } = req.params;
+    const { listingId, photoId } = req.params;
     const { body } = req;
     // call db method for updateOne
+    models.updateOne(listingId, photoId, body, (err, data) => {
       // callback, error first
-      // callback, data
-        res.send(`updateOne! ${body}`)
+      if (err) {
+        console.log(`Elasticsearch updateOne error: ${err}`);
+      } else { // callback, data
+      res.send(data);
+      }
+    });
   },
 
   deleteOne: (req, res) => {
