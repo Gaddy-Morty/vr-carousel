@@ -1,3 +1,5 @@
+// require('elastic-apm-node').start({ serviceName: 'vr-carousel' });
+require('newrelic');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const express = require('express');
@@ -6,6 +8,7 @@ const app = express();
 const port = 3000;
 const controllers = require('./controllers');
 const cors = require('cors');
+const compression = require('compression');
 // const seedDb = require('./db/seed.js'); // seed DB every time server runs
 const router = require('./routes.js');
 
@@ -13,6 +16,7 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan('dev'));
+app.use(compression());
 
 app.use(express.static(path.join(__dirname, "../client/dist")));
 

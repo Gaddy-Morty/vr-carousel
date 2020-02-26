@@ -7,6 +7,20 @@
 
 ## Endpoints
 
+### Switching between databases
+#### MongoDB
+- Uncomment mongoose, GallerySchema, and module.exports in server/db/index.js
+- Use the legacy routes for queries
+
+#### Elasticsearch
+- Uncomment Client, esclient, and module.exports in server/db/index.js
+- Uncomment esmodels in controllers.js and comment mdbmodels
+- Uncomment Elasticsearch data transformation in controllers.getAll
+
+#### MariaDB
+- Uncomment mdbmodels in controllers.js and comment esmodels
+- Comment Elasticsearch data transformation in controllers.getAll
+
 #### GET /listings/:listingId/photos/
 >req.params
 ```sh

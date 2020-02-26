@@ -18,7 +18,6 @@ module.exports = {
     data.listing_id = listingId;
     esclient.index({
       index: { _index: 'photos' },
-      refresh: 'true',
       body: data
     })
       .then((data) => callback(null, data))
@@ -29,7 +28,6 @@ module.exports = {
     esclient.update({
       index: 'photos',
       id: photoId,
-      refresh: 'true',
       body: {
         doc: data
       }
@@ -41,8 +39,7 @@ module.exports = {
   deleteOne: (photoId, callback) => {
     esclient.delete({
       id: photoId,
-      index: 'photos',
-      refresh: 'true'
+      index: 'photos'
     })
       .then((data) => callback(null, data))
       .catch((err) => callback(err));
