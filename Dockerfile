@@ -1,15 +1,9 @@
-FROM node
-
+FROM node:erbium-alpine
+RUN apk update && apk add --no-cache bash
 RUN mkdir -p /src/app
-
 WORKDIR /src/app
+COPY . .
+RUN npm install
+EXPOSE 80
 
-COPY . /src/app
-
-RUN yarn install
-
-RUN npm run build
-
-EXPOSE 3000
-
-CMD [ "npm", "run", "start" ]
+CMD [ "sh", "-c", "npm run build && npm start" ]
