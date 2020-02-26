@@ -1,5 +1,5 @@
-// const models = require('../models/esmodels.js');
-const models = require('../models/mdbmodels.js');
+const models = require('../models/esmodels.js');
+// const models = require('../models/mdbmodels.js');
 
 module.exports = {
   getAll: (req, res) => {
@@ -8,7 +8,7 @@ module.exports = {
       if (err) {
         console.log(`getAll error: ${err}`);
       } else {
-        // const photos = data.body.hits.hits; // transform Elasticsearch res
+        data = data.body.hits.hits; // transform Elasticsearch res
         res.status(200).send(data);
       }
     });

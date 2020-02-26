@@ -1,6 +1,14 @@
+.DS_Store
 node_modules
 .gitmodules
 package-lock.json
 .git
 build
 client/dist/bundle.js
+client/dist/bundle.js.map
+coverage
+CSVs/
+newrelic_agent.log
+api.json
+oneGallery.js
+script.js

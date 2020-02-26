@@ -17,10 +17,10 @@ module.exports = {
   insertOne: (listingId, data, callback) => {
     data.listing_id = listingId;
     esclient.index({
-      index: { _index: 'photos' },
+      index: 'photos',
       body: data
     })
-      .then((data) => callback(null, data))
+      .then((res) => callback(null, res))
       .catch((err) => callback(err));
   },
 
@@ -32,7 +32,7 @@ module.exports = {
         doc: data
       }
     })
-      .then((data) => callback(null, data))
+      .then((res) => callback(null, res))
       .catch((err) => callback(err));
   },
 
@@ -41,7 +41,7 @@ module.exports = {
       id: photoId,
       index: 'photos'
     })
-      .then((data) => callback(null, data))
+      .then((res) => callback(null, res))
       .catch((err) => callback(err));
   }
 };

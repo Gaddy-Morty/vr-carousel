@@ -13,8 +13,8 @@ module.exports = {
 
   insertOne: (listingId, data, callback) => {
     return pool.query("INSERT INTO photo (url_path, caption, space_type, is_main, listing_id) VALUES (?, ?, ?, 0, ?)", [data.url_path, data.caption, data.space_type, listingId])
-      .then((rows) => {
-        callback(null, rows);
+      .then((res) => {
+        callback(null, res);
       })
       .catch((err) => {
         callback(err);
@@ -31,8 +31,8 @@ module.exports = {
         }
         return pool.query(`UPDATE photo SET url_path = ?, caption = ?, space_type = ?, is_main = ? WHERE id = ?`, [data.url_path, data.caption, data.space_type, data.is_main, photoId])
       })
-      .then((rows) => {
-        callback(null, rows);
+      .then((res) => {
+        callback(null, res);
       })
       .catch((err) => {
         callback(err);
@@ -41,8 +41,8 @@ module.exports = {
 
   deleteOne: (photoId, callback) => {
     return pool.query("DELETE FROM photo WHERE id = ?", [photoId])
-      .then((rows) => {
-        callback(null, rows);
+      .then((res) => {
+        callback(null, res);
       })
       .catch((err) => {
         callback(err);
