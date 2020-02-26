@@ -13,7 +13,7 @@ function getRandomIntInclusive (min, max) {
 };
 
 export default function() {
-  const random = getRandomIntInclusive(10000000, 15000000);
+  const random = getRandomIntInclusive(10000000, 10100000);
   let res = http.get(`http://localhost:3000/api/v2/listings/${random}/photos`);
   check(res, {
     'status was 200': r => r.status == 200,
