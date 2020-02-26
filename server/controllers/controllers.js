@@ -1,14 +1,15 @@
-const models = require('../models/esmodels.js');
+// const models = require('../models/esmodels.js');
+const models = require('../models/mdbmodels.js');
 
 module.exports = {
   getAll: (req, res) => {
     const { listingId } = req.params;
     models.getAll(listingId, (err, data) => {
       if (err) {
-        console.log(`Elasticsearch getAll error: ${err}`);
+        console.log(`getAll error: ${err}`);
       } else {
-        const photos = data.body.hits.hits;
-        res.status(200).send(photos);
+        // const photos = data.body.hits.hits; // transform Elasticsearch res
+        res.status(200).send(data);
       }
     });
   },
@@ -18,7 +19,7 @@ module.exports = {
     const { body } = req;
     models.insertOne(listingId, body, (err, data) => {
       if (err) {
-        console.log(`Elasticsearch insertOne error: ${err}`);
+        console.log(`insertOne error: ${err}`);
       } else {
         res.send(data);
       }
@@ -30,7 +31,7 @@ module.exports = {
     const { body } = req;
     models.updateOne(photoId, body, (err, data) => {
       if (err) {
-        console.log(`Elasticsearch updateOne error: ${err}`);
+        console.log(`updateOne error: ${err}`);
       } else {
       res.send(data);
       }
@@ -41,7 +42,7 @@ module.exports = {
     const { photoId } = req.params;
     models.deleteOne(photoId, (err, data) => {
       if (err) {
-        console.log(`Elasticsearch deleteOne error: ${err}`);
+        console.log(`deleteOne error: ${err}`);
       } else {
         res.send(data);
       }

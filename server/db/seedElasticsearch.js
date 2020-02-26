@@ -82,7 +82,7 @@ const createChunks = (dataset, start, size=10000) => {
 
 async function run () {
   const start = Math.pow(10, 7);
-  const size = Math.pow(10, 7);
+  const size = Math.pow(10, 5);
   const end = start + size;
   let currIndex = start;
   let bulkCalls = 0;

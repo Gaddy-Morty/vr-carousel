@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const controllers = require('./controllers/escontrollers.js');
+const controllers = require('./controllers/controllers.js');
 
 //Connect controller methods to their corresponding routes
 router.get('/listings/:listingId/photos', controllers.getAll);
