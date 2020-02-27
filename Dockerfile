@@ -1,5 +1,5 @@
 FROM node:erbium-alpine
-RUN apk update && apk add --no-cache bash
+RUN apk update && apk add --no-cache bash python3
 RUN mkdir -p /src/app
 WORKDIR /src/app
 COPY . .
