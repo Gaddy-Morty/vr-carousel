@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const mongoUrl = 'mongodb://database/gallery';
 const mongoUrl = 'mongodb://localhost/gallery';
 const { GalleryModel } = require('../db');
 

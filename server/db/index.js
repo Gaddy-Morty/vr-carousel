@@ -7,15 +7,14 @@ const client = new Client({
 
 async function checkConnection () {
   let isConnected = false;
-  while (!isConnected) {
-    console.log('Connecting to ES');
-    try {
-      const health = await client.cluster.health({});
-      console.log(health);
-      isConnected = true;
-    } catch (err) {
-      console.log('Connection Failed, Retrying...', err);
-    }
+  console.log('Connecting to ES');
+  try {
+    const health = await client.cluster.health({});
+    console.log(health);
+    isConnected = true;
+  } catch (err) {
+    console.log('hostname', hostname);
+    console.log('Connection Failed\n', err);
   }
 }
 
