@@ -2,11 +2,7 @@
 
 require('array.prototype.flatmap').shim();
 const s3Export = require('./s3Export.js');
-
-const { Client } = require('@elastic/elasticsearch');
-const client = new Client({
-  node: 'http://localhost:9200',
-});
+const { client } = require('./index.js');
 
 async function createIndex () {
   await client.indices.create({
