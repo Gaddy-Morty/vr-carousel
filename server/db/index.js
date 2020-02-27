@@ -2,9 +2,8 @@ const mongoose = require('mongoose');
 // const mongoUrl = 'mongodb://database/gallery'; // for docker-compose
 
 const { Client } = require('@elastic/elasticsearch');
-const esclient = new Client({
-  node: 'http://localhost:9200',
-});
+const host = process.env.ES_HOST || 'localhost';
+const esclient = new Client({ host: { host, 9200 } });
 
 const mariadb = require('mariadb');
 const pool = mariadb.createPool({
