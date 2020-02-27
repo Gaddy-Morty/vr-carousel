@@ -4,7 +4,7 @@ WORKDIR /src/app
 COPY . .
 RUN apk update \
   && apk add --no-cache --virtual .build-deps alpine-sdk python \
-  && npm ci --prod \
+  && npm install \
   && apk del .build-deps
 EXPOSE 80
 
