@@ -1,7 +1,6 @@
 const { Client } = require('@elastic/elasticsearch');
-const hostname = process.env.ES_HOST || 'localhost';
 const client = new Client({
-  node: `http://${hostname}:9200`,
+  node: `http://localhost:9200`,
   log: 'error'
 });
 
@@ -13,7 +12,7 @@ async function checkConnection () {
     console.log(health);
     isConnected = true;
   } catch (err) {
-    console.log('hostname', hostname);
+    // console.log('hostname', hostname);
     console.log('Connection Failed\n', err);
   }
 }
