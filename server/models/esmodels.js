@@ -1,8 +1,8 @@
-const { esclient } = require('../db/index.js');
+const { client } = require('../db/index.js');
 
 module.exports = {
   getAll: (listingId, callback) => {
-    esclient.search({
+    client.search({
       index: 'photos',
       body: {
         query: {
@@ -16,7 +16,7 @@ module.exports = {
 
   insertOne: (listingId, data, callback) => {
     data.listing_id = listingId;
-    esclient.index({
+    client.index({
       index: 'photos',
       body: data
     })
@@ -25,7 +25,7 @@ module.exports = {
   },
 
   updateOne: (photoId, data, callback) => {
-    esclient.update({
+    client.update({
       index: 'photos',
       id: photoId,
       body: {
@@ -37,7 +37,7 @@ module.exports = {
   },
 
   deleteOne: (photoId, callback) => {
-    esclient.delete({
+    client.delete({
       id: photoId,
       index: 'photos'
     })
