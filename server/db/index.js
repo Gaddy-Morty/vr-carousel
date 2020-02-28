@@ -1,18 +1,19 @@
 const { Client } = require('@elastic/elasticsearch');
+const hostname = process.env.ES_HOST || 'localhost';
 const client = new Client({
-  node: `http://database:9200`,
+  node: `http://${hostname}:9200`,
   log: 'error'
 });
 
 async function checkConnection () {
   let isConnected = false;
-  console.log('Connecting to ES');
+  console.log('Connecting to host', hostname);
   try {
     const health = await client.cluster.health({});
     console.log(health);
     isConnected = true;
   } catch (err) {
-    // console.log('hostname', hostname);
+    console.log('process.env.ES_HOST', process.env.ES_HOST);
     console.log('Connection Failed\n', err);
   }
 }
