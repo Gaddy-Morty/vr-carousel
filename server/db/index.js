@@ -1,6 +1,6 @@
 const { Client } = require('@elastic/elasticsearch');
 const client = new Client({
-  node: `http://64.124.137.130:9200`,
+  node: `http://database:9200`,
   log: 'error'
 });
 
