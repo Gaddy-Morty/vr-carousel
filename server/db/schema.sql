@@ -20,17 +20,14 @@ CREATE TABLE vacayhome.photo (
 
 ALTER TABLE vacayhome.listing DISABLE KEYS;
 ALTER TABLE vacayhome.photo DISABLE KEYS;
+
 BEGIN;
 LOAD DATA INFILE '/Users/gabrielsong/hrsf125/vr-carousel/CSVs/listings.csv' INTO TABLE vacayhome.listing 
   FIELDS TERMINATED BY ','
   LINES TERMINATED BY '\n'
   IGNORE 1 LINES (id);
 COMMIT;
-ALTER TABLE vacayhome.photo ENABLE KEYS;
-ALTER TABLE vacayhome.listing ENABLE KEYS;
 
-ALTER TABLE vacayhome.listing DISABLE KEYS;
-ALTER TABLE vacayhome.photo DISABLE KEYS;
 BEGIN;
 LOAD DATA INFILE '/Users/gabrielsong/hrsf125/vr-carousel/CSVs/photos.part1.csv' INTO TABLE vacayhome.photo
   FIELDS
@@ -40,5 +37,6 @@ LOAD DATA INFILE '/Users/gabrielsong/hrsf125/vr-carousel/CSVs/photos.part1.csv' 
     TERMINATED BY '\n'
   IGNORE 1 LINES (url_path,caption,space_type,@sort_order,is_main,listing_id);
 COMMIT;
+
 ALTER TABLE vacayhome.photo ENABLE KEYS;
 ALTER TABLE vacayhome.listing ENABLE KEYS;
