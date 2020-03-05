@@ -60,7 +60,7 @@ const App = (props) => {
 
 
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
 
 
