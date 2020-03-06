@@ -2,7 +2,7 @@ const { Client } = require('@elastic/elasticsearch');
 const hostname = process.env.ES_HOST || 'localhost';
 const client = new Client({
   node: `http://${hostname}:9200`,
-  log: 'error'
+  log: 'trace'
 });
 
 async function checkConnection () {
