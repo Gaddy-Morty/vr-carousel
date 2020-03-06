@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "webpack --config webpack.prod.js",
-    "start": "NODE_ENV=production node ./server/index.js",
+    "start": "NODE_ENV=production ES_HOST=172.31.20.231 node --max-old-space-size=768 ./server/index.js",
     "start-dev": "nodemon ./server/index.js",
     "seed": "node ./server/db/seed.js",
     "csv": "node ./server/db/seedMariaDb.js",
